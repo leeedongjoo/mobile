@@ -54,3 +54,9 @@ class MyApp extends StatelessWidget {
 }
 
 // setting.json 내용 뭐 못넣었음 확인하셈
+
+//믿에거가 내토큰
+// "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzI2MDM1MzI2LCJpYXQiOjE3MjYwMzE3MjYsInN1YiI6IjQyODhjY2MwLTliNjktNDAxOS1hM2NlLWU3ZDI3MGFkMTQyNyIsImVtYWlsIjoiMjAxOTMwNDIwQGRhZWxpbS5hYy5rciIsInBob25lIjoiIiwiYXBwX21ldGFkYXRhIjp7InByb3ZpZGVyIjoiZW1haWwiLCJwcm92aWRlcnMiOlsiZW1haWwiXX0sInVzZXJfbWV0YWRhdGEiOnsiZGlzcGxheV9uYW1lIjoi7J2064-Z7KO8Iiwic3R1ZGVudF9udW1iZXIiOiIyMDE5MzA0MjAifSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTcyNjAzMTcyNn1dLCJzZXNzaW9uX2lkIjoiNWYwZmY4ZGUtYmMwYi00ZTFkLWJlOGUtOTMzNzRiNGI0YzFhIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.PJyEk9gODRqmKxiEgjBT2wgdQ8wxRgZaj2rd145NoiI",
+//     "token_type": "bearer",
+//     "expires_in": 3600,
+//     "expires_at": 1726035326
