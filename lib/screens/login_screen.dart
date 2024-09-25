@@ -17,6 +17,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _pwController = TextEditingController();
@@ -92,6 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
         body: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
+              child: DefaultTextStyle(style: GoogleFonts.poppins(
+                color: Theme.of(context).textTheme.bo
+              ))
               horizontal: 16,
             ),
             child: Column(
@@ -130,8 +134,10 @@ class _LoginScreenState extends State<LoginScreen> {
             child:ElevatedButton(
             onPressed: _onSignIn,
             style: ElevatedButton.styleFrom(
+
               backgroundColor: Color(0xFFE46A61),
               padding: const EdgeInsets.symmetric(
+             
                 vertical: 20,
               ),
               shape: RoundedRectangleBorder()

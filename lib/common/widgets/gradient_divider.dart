@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 
 class GradientDivider extends StatelessWidget {
   final bool reverse;
+  final double? width;
   final Color color;
 
   const GradientDivider({
     super.key,
-    this.color = black,
+    this.color = Colors.black,
+    this.width,
     this.reverse = false,
-    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 30,
+      width: width,
       height: 1.5,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
