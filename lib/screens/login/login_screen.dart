@@ -176,100 +176,107 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFDEDEE2),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-          ),
-          child: DefaultTextStyle(
-            style: GoogleFonts.poppins(
-              color: context.textTheme.bodyMedium?.color,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                36.heightBox,
+        child: SizedBox(
+          width: 320,
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+              ),
+              child: DefaultTextStyle(
+                style: GoogleFonts.poppins(
+                  color: context.textTheme.bodyMedium?.color,
+                ),
+                child: Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      36.heightBox,
 
-                ..._buildTitleTexts(),
+                      ..._buildTitleTexts(),
 
-                40.heightBox,
+                      40.heightBox,
 
-                ..._buildTextFields(),
+                      ..._buildTextFields(),
 
-                // Recovery Password
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: _onRecoveryPassword,
-                    child: const Text(
-                      'Recovery Password',
-                      style: TextStyle(fontSize: 12),
-                    ),
+                      // Recovery Password
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: _onRecoveryPassword,
+                          child: const Text(
+                            'Recovery Password',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+
+                      30.heightBox,
+
+                      // Sign In Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _onSignIn,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE46A61),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      40.heightBox,
+
+                      // Or continue with
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: GradientDivider(),
+                          ),
+                          15.widthBox,
+                          const Text('Or continue with'),
+                          15.widthBox,
+                          const Expanded(
+                            child: GradientDivider(reverse: true),
+                          ),
+                        ],
+                      ),
+
+                      40.heightBox,
+
+                      // SSO Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildSsoButton(
+                            onTap: () => _onSsoSignIn(SsoEnum.google),
+                            iconUrl: icGoogle,
+                          ),
+                          _buildSsoButton(
+                            onTap: () => _onSsoSignIn(SsoEnum.apple),
+                            iconUrl: icApple,
+                          ),
+                          _buildSsoButton(
+                            onTap: () => _onSsoSignIn(SsoEnum.github),
+                            iconUrl: icGithub,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-
-                30.heightBox,
-
-                // Sign In Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _onSignIn,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFE46A61),
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Sign In',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-
-                40.heightBox,
-
-                // Or continue with
-                Row(
-                  children: [
-                    const Expanded(
-                      child: GradientDivider(),
-                    ),
-                    15.widthBox,
-                    const Text('Or continue with'),
-                    15.widthBox,
-                    const Expanded(
-                      child: GradientDivider(reverse: true),
-                    ),
-                  ],
-                ),
-
-                40.heightBox,
-
-                // SSO Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildSsoButton(
-                      onTap: () => _onSsoSignIn(SsoEnum.google),
-                      iconUrl: icGoogle,
-                    ),
-                    _buildSsoButton(
-                      onTap: () => _onSsoSignIn(SsoEnum.apple),
-                      iconUrl: icApple,
-                    ),
-                    _buildSsoButton(
-                      onTap: () => _onSsoSignIn(SsoEnum.github),
-                      iconUrl: icGithub,
-                    ),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
         ),
