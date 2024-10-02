@@ -4,6 +4,7 @@ import 'package:app/enums/sso_enum.dart';
 import 'package:app/extensions/context_extension.dart';
 import 'package:app/common/widgets/gradient_divider.dart';
 import 'package:app/config.dart';
+import 'package:app/models/auth_data.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -51,15 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (statusCode != 200) {
       if (mounted) {
-        return context.showSnackBar(
+        context.showSnackBar(
           content: Text(body),
         );
       }
+      return;
     }
-    Log.green({
-      'status': response.statusCode,
-      'body': response.body,
-    });
+    final authData = AuthData.fromJson(jsonDecode(body));
   }
 
   // NOTE: SSO 로그인 버튼
