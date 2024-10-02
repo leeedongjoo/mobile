@@ -4,7 +4,7 @@ import 'dart:convert';
 class AuthData {
   final String tokenType;
   final String token;
-  final int expiresAt;
+  final DateTime expiresAt;
   AuthData({
     required this.tokenType,
     required this.token,
@@ -14,7 +14,7 @@ class AuthData {
   AuthData copyWith({
     String? tokenType,
     String? token,
-    int? expiresAt,
+    DateTime? expiresAt,
   }) {
     return AuthData(
       tokenType: tokenType ?? this.tokenType,
@@ -25,18 +25,17 @@ class AuthData {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'token_type': tokenType,
-      'access_token': token,
-      'expires_at': expiresAt.millisecondsSinceEpoch,
+      'tokenType': tokenType,
+      'token': token,
+      'expiresAt': expiresAt.millisecondsSinceEpoch,
     };
   }
 
   factory AuthData.fromMap(Map<String, dynamic> map) {
     return AuthData(
-      tokenType: map['token_type'] as String,
+      tokenType: map['tokenType'] as String,
       token: map['token'] as String,
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expires_at'] * 1000)
-          .toLocal(),
+      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expiresAt']),
     );
   }
 
