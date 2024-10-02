@@ -16,7 +16,7 @@ class StorageHelper {
   }
 
   //AuthData 불러오기\
-  static AuthData get authData {
+  static AuthData? get authData {
     final data = _pref!.getString(_authKey);
 
     return data != null ? AuthData.fromJson(data) : null;
