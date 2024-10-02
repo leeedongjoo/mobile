@@ -27,7 +27,7 @@ class AuthData {
     return <String, dynamic>{
       'token_type': tokenType,
       'access_token': token,
-      'expires_at': expiresAt,
+      'expires_at': expiresAt.millisecondsSinceEpoch,
     };
   }
 
@@ -35,7 +35,7 @@ class AuthData {
     return AuthData(
       tokenType: map['token_type'] as String,
       token: map['token'] as String,
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expires_at'] as int)
+      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expires_at'] * 1000)
           .toLocal(),
     );
   }
