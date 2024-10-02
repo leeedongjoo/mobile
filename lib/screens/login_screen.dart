@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:app/common/enums/sso_enum.dart';
-import 'package:app/common/extensions/context_extension.dart';
+import 'package:app/enums/sso_enum.dart';
+import 'package:app/extensions/context_extension.dart';
 import 'package:app/common/widgets/gradient_divider.dart';
 import 'package:app/config.dart';
 import 'package:easy_extension/easy_extension.dart';
@@ -46,7 +46,16 @@ class _LoginScreenState extends State<LoginScreen> {
       Uri.parse(authUrl),
       body: jsonEncode(loginData),
     );
+    final statusCode = response.statusCode;
+    final body = utf8.decode(response.bodyBytes);
 
+    if (statusCode != 200) {
+      if (mounted) {
+        return context.showSnackBar(
+          content: Text(body),
+        );
+      }
+    }
     Log.green({
       'status': response.statusCode,
       'body': response.body,

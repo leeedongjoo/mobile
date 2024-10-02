@@ -1,9 +1,12 @@
 import 'package:app/screens/login_screen.dart';
+import 'package:app/helpers/storage_helper.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  await StroageHelper.initialized();
+ runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
