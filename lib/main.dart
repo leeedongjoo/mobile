@@ -1,4 +1,5 @@
-import 'package:app/screens/login_screen.dart';
+import 'package:app/routes/app_router.dart';
+import 'package:app/screens/login/login_screen.dart';
 import 'package:app/helpers/storage_helper.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       theme: FlexThemeData.light(
         scheme: FlexScheme.outerSpace,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
@@ -47,7 +48,10 @@ class MyApp extends StatelessWidget {
         swapLegacyOnMaterial3: true,
       ),
       themeMode: ThemeMode.light,
-      home: const LoginScreen(),
+      // debugShowMaterialGrid: true,
+      // debugShowCheckedModeBanner: false,
+      // showPerformanceOverlay: true,
+      routerConfig: appRouter,
     );
   }
 }
