@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: FlexThemeData.light(
-        scheme: FlexScheme.blueM3,
+        scheme: FlexScheme.outerSpace,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 7,
         subThemesData: const FlexSubThemesData(
@@ -27,11 +27,9 @@ class MyApp extends StatelessWidget {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
-        // To use the Playground font, add GoogleFonts package and uncomment
-        // fontFamily: GoogleFonts.notoSans().fontFamily,
       ),
       darkTheme: FlexThemeData.dark(
-        scheme: FlexScheme.blueM3,
+        scheme: FlexScheme.outerSpace,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 13,
         subThemesData: const FlexSubThemesData(
@@ -44,10 +42,8 @@ class MyApp extends StatelessWidget {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
-        // To use the Playground font, add GoogleFonts package and uncomment
-        // fontFamily: GoogleFonts.notoSans().fontFamily,
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: const LoginScreen(),
     );
   }

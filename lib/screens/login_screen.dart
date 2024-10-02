@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'dart:ui';
 
+import 'package:app/common/enums/sso_enum.dart';
+import 'package:app/common/extensions/context_extension.dart';
 import 'package:app/common/widgets/gradient_divider.dart';
 import 'package:app/config.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,158 +17,251 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _pwController = TextEditingController();
+  bool _isObscure = true;
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _pwController.dispose();
+    super.dispose();
+  }
 
-  void _onFetchedApi() async{
-    http.post(Uri.parse(authUrl),);
-    final loginData ={
-      'email':'',
-      'password':'',
+  // NOTE: 패스워드 재설정
+  void _onRecoveryPassword() {}
+
+  // NOTE: 로그인 버튼
+  void _onSignIn() async {
+    final email = _emailController.text;
+    final password = _pwController.text;
+
+    final loginData = {
+      'email': email,
+      'password': password,
     };
-    
+
     final response = await http.post(
       Uri.parse(authUrl),
-      body:  jsonEncode(loginData),
+      body: jsonEncode(loginData),
     );
 
     Log.green({
       'status': response.statusCode,
-      'body':response.body,
-      
+      'body': response.body,
     });
   }
-  List<Widget> _buildTitleText(){
-    return [
-      Text('Hello Again',
-          style: GoogleFonts.poppins(
-            fontSize:28,
-            fontweight: FontWeight.bold,
-          ),
-          ),
-          15.heightBox,
-          Text(
-            'Wellcome back you'
-          )];
+
+  // NOTE: SSO 로그인 버튼
+  void _onSsoSignIn(SsoEnum type) {
+    switch (type) {
+      case SsoEnum.google:
+        context.showSnackBarText('구글 로그인 시작');
+      case SsoEnum.apple:
+      case SsoEnum.github:
+        context.showSnackBarText('준비 중인 기능입니다.');
+    }
   }
+
+  // NOTE: 타이틀 텍스트 위젯들
+  List<Widget> _buildTitleTexts() => [
+        const Text(
+          'Hello Again!',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        15.heightBox,
+        const Text(
+          'Wellcome back you\'ve\nbeen missed!',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+          ),
+        )
+      ];
+
+  // NOTE: 텍스트 입력 위젯들
+  List<Widget> _buildTextFields() => [
+        _buildTextField(
+          controller: _emailController,
+          hintText: 'Enter email',
+        ),
+        10.heightBox,
+        _buildTextField(
+          onObscure: (down) {
+            setState(() {
+              _isObscure = !down;
+            });
+          },
+          controller: _pwController,
+          hintText: 'Password',
+          obscure: _isObscure,
+        ),
+      ];
+
+  // NOTE: 텍스트 입력 위젯
   Widget _buildTextField({
     required TextEditingController controller,
-    required hintText,
-    bool obscure = false,}) {
+    required String hintText,
+    bool? obscure,
+    Function(bool down)? onObscure,
+  }) {
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(8),
+      borderSide: BorderSide.none,
+    );
+
     return TextField(
-      controller:controller,
+      controller: controller,
       decoration: InputDecoration(
         fillColor: Colors.white,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-       focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-       ),
+        enabledBorder: border,
+        focusedBorder: border,
         hintText: hintText,
-        prefixIcon:obscure != null
-        ? Icon(
-          obscure
-          ?Icons.visibility_off
-          :Icons.visibility
-          )
-        ),
-        obscureText: obscure ?? false,
+        suffixIcon: obscure != null
+            ? GestureDetector(
+                onTapDown: (details) => onObscure?.call(true),
+                onTapUp: (details) => onObscure?.call(false),
+                child: Icon(
+                  obscure //
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                ),
+              )
+            : null,
+      ),
+      obscureText: obscure ?? false,
     );
-    
   }
-  // bool nolamda(){
-  //   return false;
-  // }
-  // bool lamda() => true;
-  // bool get getLamda => true;
+
+  // NOTE: SSO 버튼 위젯
+  Widget _buildSsoButton({
+    required String iconUrl,
+    VoidCallback? onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 80,
+        height: 60,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.white,
+          ),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Image.network(iconUrl),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              child: DefaultTextStyle(style: GoogleFonts.poppins(
-                color: Theme.of(context).textTheme.bo
-              ))
-              horizontal: 16,
+      backgroundColor: const Color(0xFFDEDEE2),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+          ),
+          child: DefaultTextStyle(
+            style: GoogleFonts.poppins(
+              color: context.textTheme.bodyMedium?.color,
             ),
             child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children:[
-          double.infinity.widthBox,
-          40.heightBox,
-          ..._buildTitleText(
-            controller: _emailController,
-            hintText:'Enter email',
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                36.heightBox,
 
-          ),
-          20.heightBox,
-          ..._buildTitleText(
-            onObscure:(down){
-              setState((){
-                _isObscure = !down;
-              })
-            }
-            controller: _pwController,
-            hintText:'Enter password',
-            obscure: _isObscure,
+                ..._buildTitleTexts(),
 
-          ),
-          TextButton(
-            onPressed: :_onRecoveryPassword,
-            child: Text(
-              'Recovery Password',
-              style: GoogleFonts.poppins(
-                fontSize: 12,
-                )
-              ),
-          ),
-          SizedBox(
-            width:  double.infinity,
-            child:ElevatedButton(
-            onPressed: _onSignIn,
-            style: ElevatedButton.styleFrom(
+                40.heightBox,
 
-              backgroundColor: Color(0xFFE46A61),
-              padding: const EdgeInsets.symmetric(
-             
-                vertical: 20,
-              ),
-              shape: RoundedRectangleBorder()
-            ),
-            child: Text(
-              'Sign In',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-              ),
+                ..._buildTextFields(),
+
+                // Recovery Password
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: _onRecoveryPassword,
+                    child: const Text(
+                      'Recovery Password',
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ),
+
+                30.heightBox,
+
+                // Sign In Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _onSignIn,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFE46A61),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+
+                40.heightBox,
+
+                // Or continue with
+                Row(
+                  children: [
+                    const Expanded(
+                      child: GradientDivider(),
+                    ),
+                    15.widthBox,
+                    const Text('Or continue with'),
+                    15.widthBox,
+                    const Expanded(
+                      child: GradientDivider(reverse: true),
+                    ),
+                  ],
+                ),
+
+                40.heightBox,
+
+                // SSO Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildSsoButton(
+                      onTap: () => _onSsoSignIn(SsoEnum.google),
+                      iconUrl: icGoogle,
+                    ),
+                    _buildSsoButton(
+                      onTap: () => _onSsoSignIn(SsoEnum.apple),
+                      iconUrl: icApple,
+                    ),
+                    _buildSsoButton(
+                      onTap: () => _onSsoSignIn(SsoEnum.github),
+                      iconUrl: icGithub,
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-          ),
-          40.heightBox,
-          Row(
-            children: [
-              const GradientDivider(),
-              15.widthBox,
-              const Text(
-                'Or continue with',
-              ),
-              15.widthBox,
-            const GradientDivider(
-              reverse: true,
-            ),
-            ],
-          )
-        ],
-        ),)
-      
+        ),
       ),
     );
-    
   }
 }

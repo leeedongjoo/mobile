@@ -7,9 +7,9 @@ class GradientDivider extends StatelessWidget {
 
   const GradientDivider({
     super.key,
-    this.color = Colors.black,
-    this.width,
     this.reverse = false,
+    this.width,
+    this.color = Colors.black,
   });
 
   @override
@@ -17,15 +17,18 @@ class GradientDivider extends StatelessWidget {
     return Container(
       width: width,
       height: 1.5,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            // Colors.transparent,
-            Color.fromARGB(255, 255, 255, 255),
-            Colors.black26,
+            Colors.transparent,
+            color.withOpacity(0.24),
           ],
-          begin: !reverse ? Alignment.centerLeft : Alignment.centerRight,
-          end: !reverse ? Alignment.centerLeft : Alignment.centerRight,
+          begin: !reverse //
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          end: !reverse //
+              ? Alignment.centerRight
+              : Alignment.centerLeft,
         ),
       ),
     );
