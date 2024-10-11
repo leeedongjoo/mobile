@@ -21,7 +21,8 @@ class SettingScreen extends StatelessWidget {
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
 
-    if (statusCode != 200) throw Exception('Failed Fetch');
+    if (statusCode != 200) throw Exception(body);
+
     return jsonDecode(body);
   }
 
@@ -39,6 +40,7 @@ class SettingScreen extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   }
+                  final userData = snapshot.data;
                   return const ListTile(
                     leading: CircleAvatar(
                       backgroundImage: NetworkImage(

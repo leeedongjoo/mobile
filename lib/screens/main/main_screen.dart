@@ -13,6 +13,11 @@ class MainScreen extends StatelessWidget {
     return const AppScaffold();
   }
 }
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppScaffold();
+  }
   
   
 }
