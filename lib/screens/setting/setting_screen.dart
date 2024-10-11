@@ -40,6 +40,12 @@ class SettingScreen extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   }
+
+                  // if (error != null) {
+                  //   name = '데이터를 불러올 수 없습니다.';
+                  //   studentNumber = '$error'
+                  // }
+
                   final userData = snapshot.data;
                   return const ListTile(
                     leading: CircleAvatar(
