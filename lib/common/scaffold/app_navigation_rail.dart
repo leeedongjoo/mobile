@@ -17,7 +17,7 @@ class AppNavigationRail extends StatelessWidget {
     return NavigationRail(
       onDestinationSelected: (value) {
         final screen = screens[value];
-        context.goNamed(screen.name);
+        context.pushNamed(screen.name);
       },
       selectedIndex: appScreen.index - 1,
       destinations: screens.map((e) {
