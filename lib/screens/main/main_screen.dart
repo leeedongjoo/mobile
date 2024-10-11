@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
-}
 
-class _MainScreenState extends State<MainScreen> {
+  
+  class _MainScreenState extends State<MainScreen> {
   int selectedIndex = 0; // 선택된 항목 인덱스
 
   @override
@@ -13,3 +13,8 @@ class _MainScreenState extends State<MainScreen> {
     return const AppScaffold();
   }
 }
+  
+  
+}
+
+
