@@ -5,6 +5,7 @@ class AuthData {
   final String tokenType;
   final String token;
   final DateTime expiresAt;
+
   AuthData({
     required this.tokenType,
     required this.token,
@@ -25,17 +26,18 @@ class AuthData {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'tokenType': tokenType,
-      'token': token,
-      'expiresAt': expiresAt.millisecondsSinceEpoch,
+      'token_type': tokenType,
+      'access_token': token,
+      'expires_at': expiresAt.millisecondsSinceEpoch,
     };
   }
 
+  // NOTE: AuthData 로 매핑
   factory AuthData.fromMap(Map<String, dynamic> map) {
     return AuthData(
-      tokenType: map['tokenType'] as String,
-      token: map['token'] as String,
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expiresAt']),
+      tokenType: map['token_type'],
+      token: map['access_token'],
+      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expires_at']),
     );
   }
 
@@ -47,16 +49,4 @@ class AuthData {
   @override
   String toString() =>
       'AuthData(tokenType: $tokenType, token: $token, expiresAt: $expiresAt)';
-
-  @override
-  bool operator ==(covariant AuthData other) {
-    if (identical(this, other)) return true;
-
-    return other.tokenType == tokenType &&
-        other.token == token &&
-        other.expiresAt == expiresAt;
-  }
-
-  @override
-  int get hashCode => tokenType.hashCode ^ token.hashCode ^ expiresAt.hashCode;
 }

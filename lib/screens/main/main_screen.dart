@@ -1,18 +1,15 @@
+import 'package:app/common/scaffold/app_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int selectedIndex = 0; // 선택된 항목 인덱스
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-          child: Center(
-              child: Text(
-        '메인 화면',
-        style: TextStyle(),
-      ))),
-    );
+    return const AppScaffold();
   }
 }

@@ -48,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Uri.parse(authUrl),
       body: jsonEncode(loginData),
     );
+
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
 
@@ -59,7 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       return;
     }
-    final authData = AuthData.fromJson(jsonDecode(body));
+
+    // NOTE: AuthData 로 변환
+    final authData = AuthData.fromMap(jsonDecode(body));
     await StorageHelper.setAuthData(authData);
     final savedAuthData = StorageHelper.authData;
     Log.green(savedAuthData);
@@ -176,105 +179,103 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFDEDEE2),
       body: SafeArea(
-        child: SizedBox(
-          width: 320,
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-              ),
-              child: DefaultTextStyle(
-                style: GoogleFonts.poppins(
-                  color: context.textTheme.bodyMedium?.color,
-                ),
-                child: Center(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      36.heightBox,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+          ),
+          child: DefaultTextStyle(
+            style: GoogleFonts.poppins(
+              color: context.textTheme.bodyMedium?.color,
+            ),
+            child: Center(
+              child: SizedBox(
+                width: 300,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    36.heightBox,
 
-                      ..._buildTitleTexts(),
+                    ..._buildTitleTexts(),
 
-                      40.heightBox,
+                    40.heightBox,
 
-                      ..._buildTextFields(),
+                    ..._buildTextFields(),
 
-                      // Recovery Password
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: _onRecoveryPassword,
-                          child: const Text(
-                            'Recovery Password',
-                            style: TextStyle(fontSize: 12),
+                    // Recovery Password
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: _onRecoveryPassword,
+                        child: const Text(
+                          'Recovery Password',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+
+                    30.heightBox,
+
+                    // Sign In Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _onSignIn,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFE46A61),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 20,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Sign In',
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
                         ),
                       ),
+                    ),
 
-                      30.heightBox,
+                    40.heightBox,
 
-                      // Sign In Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _onSignIn,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFE46A61),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 20,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            'Sign In',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
+                    // Or continue with
+                    Row(
+                      children: [
+                        const Expanded(
+                          child: GradientDivider(),
                         ),
-                      ),
+                        15.widthBox,
+                        const Text('Or continue with'),
+                        15.widthBox,
+                        const Expanded(
+                          child: GradientDivider(reverse: true),
+                        ),
+                      ],
+                    ),
 
-                      40.heightBox,
+                    40.heightBox,
 
-                      // Or continue with
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: GradientDivider(),
-                          ),
-                          15.widthBox,
-                          const Text('Or continue with'),
-                          15.widthBox,
-                          const Expanded(
-                            child: GradientDivider(reverse: true),
-                          ),
-                        ],
-                      ),
-
-                      40.heightBox,
-
-                      // SSO Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildSsoButton(
-                            onTap: () => _onSsoSignIn(SsoEnum.google),
-                            iconUrl: icGoogle,
-                          ),
-                          _buildSsoButton(
-                            onTap: () => _onSsoSignIn(SsoEnum.apple),
-                            iconUrl: icApple,
-                          ),
-                          _buildSsoButton(
-                            onTap: () => _onSsoSignIn(SsoEnum.github),
-                            iconUrl: icGithub,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    // SSO Buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildSsoButton(
+                          onTap: () => _onSsoSignIn(SsoEnum.google),
+                          iconUrl: icGoogle,
+                        ),
+                        _buildSsoButton(
+                          onTap: () => _onSsoSignIn(SsoEnum.apple),
+                          iconUrl: icApple,
+                        ),
+                        _buildSsoButton(
+                          onTap: () => _onSsoSignIn(SsoEnum.github),
+                          iconUrl: icGithub,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

@@ -4,9 +4,11 @@ import 'package:app/helpers/storage_helper.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await StorageHelper.initialized();
+
   runApp(const MyApp());
 }
 
@@ -48,9 +50,7 @@ class MyApp extends StatelessWidget {
         swapLegacyOnMaterial3: true,
       ),
       themeMode: ThemeMode.light,
-      // debugShowMaterialGrid: true,
-      // debugShowCheckedModeBanner: false,
-      // showPerformanceOverlay: true,
+      showPerformanceOverlay: false,
       routerConfig: appRouter,
     );
   }
