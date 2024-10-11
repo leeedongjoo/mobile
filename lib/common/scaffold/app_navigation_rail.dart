@@ -1,24 +1,31 @@
 import 'package:app/routes/app_screen.dart';
 import 'package:app/routes/app_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../routes/app_screen.dart';
 
 class AppNavigationRail extends StatelessWidget {
   final AppScreen appScreen;
-  final Widget child;
-  const AppNavigationRail({super.key});
+  const AppNavigationRail({super.key, required this.appScreen});
 
   @override
   Widget build(BuildContext context) {
+    final screens = List<AppScreen>.from(AppScreen.values);
+    screens.removeAt(0);
+
     return NavigationRail(
-        onDestinationSelected: (value) {},
-        selectedIndex: 0,
-        selectedIcons: AppScreen.values.map((e) {
-          return NavigationRailDestination(
-            icon: Icons(e.getIcon),
-            label: Text(e.name),
-          );
-        }));
+      onDestinationSelected: (value) {
+        final screen = screens[value];
+        context.goNamed(screen.name);
+      },
+      selectedIndex: appScreen.index - 1,
+      destinations: screens.map((e) {
+        return NavigationRailDestination(
+          icon: Icon(e.getIcon),
+          label: Text(e.name),
+        );
+      }).toList(),
+    );
   }
 }
