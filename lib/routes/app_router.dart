@@ -2,6 +2,7 @@ import 'package:app/helpers/storage_helper.dart';
 import 'package:app/routes/app_screen.dart';
 import 'package:app/screens/login/login_screen.dart';
 import 'package:app/screens/main/main_screen.dart';
+import 'package:app/screens/setting/setting_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:go_router/go_router.dart';
 
@@ -29,6 +30,11 @@ final appRouter = GoRouter(
       path: AppScreen.main.toPath,
       name: AppScreen.main.name,
       builder: (context, state) => const MainScreen(),
+    ),
+    GoRoute(
+      path: AppScreen.setting.toPath,
+      name: AppScreen.setting.name,
+      builder: (context, state) => const SettingScreen(),
     )
   ],
 );

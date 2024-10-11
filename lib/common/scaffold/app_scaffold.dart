@@ -1,11 +1,14 @@
 import 'package:app/common/scaffold/app_navigation_rail.dart';
+import 'package:app/routes/app_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppScaffold extends StatelessWidget {
+  final AppScreen appScreen;
   final Widget child;
   const AppScaffold({
     super.key,
-    required child,
+    required this.appScreen,
+    required this.child,
   });
 
   @override
@@ -14,7 +17,9 @@ class AppScaffold extends StatelessWidget {
       body: SafeArea(
         child: Row(
           children: [
-            const AppNavigationRail(),
+            AppNavigationRail(
+              appScreen: appScreen,
+            ),
             Expanded(
               child: child,
             )
