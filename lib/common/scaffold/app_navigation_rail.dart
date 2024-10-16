@@ -7,7 +7,11 @@ import '../../routes/app_screen.dart';
 
 class AppNavigationRail extends StatelessWidget {
   final AppScreen appScreen;
-  const AppNavigationRail({super.key, required this.appScreen});
+
+  const AppNavigationRail({
+    super.key,
+    required this.appScreen,
+  });
 
   @override
   Widget build(BuildContext context) {

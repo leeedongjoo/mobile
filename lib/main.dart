@@ -55,7 +55,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
 // setting.json 내용 뭐 못넣었음 확인하셈
 
 //믿에거가 내토큰

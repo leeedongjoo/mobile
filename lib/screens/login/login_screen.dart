@@ -6,8 +6,10 @@ import 'package:app/common/widgets/gradient_divider.dart';
 import 'package:app/config.dart';
 import 'package:app/helpers/storage_helper.dart';
 import 'package:app/models/auth_data.dart';
+import 'package:app/routes/app_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -65,7 +67,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final authData = AuthData.fromMap(jsonDecode(body));
     await StorageHelper.setAuthData(authData);
     final savedAuthData = StorageHelper.authData;
+
+    // TODO: 화면 이동
     Log.green(savedAuthData);
+
+    if (mounted) context.goNamed(AppScreen.main.name);
   }
 
   // NOTE: SSO 로그인 버튼

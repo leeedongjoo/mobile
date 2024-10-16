@@ -11,9 +11,10 @@ final appRouter = GoRouter(
   redirect: (context, state) {
     Log.green('Route FullPath: ${state.fullPath}');
 
-    if (state.fullPath != AppScreen.main.toPath) {
+    if (state.fullPath == AppScreen.login.toPath) {
       return null;
     }
+
     if (StorageHelper.authData == null) {
       return AppScreen.login.toPath;
     }
@@ -21,20 +22,27 @@ final appRouter = GoRouter(
     return null;
   },
   routes: [
+    // NOTE: 로그인 화면
     GoRoute(
       path: AppScreen.login.toPath,
       name: AppScreen.login.name,
       builder: (context, state) => const LoginScreen(),
     ),
+    // NOTE: 메인 화면
     GoRoute(
       path: AppScreen.main.toPath,
       name: AppScreen.main.name,
-      builder: (context, state) => const MainScreen(),
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: MainScreen(),
+      ),
     ),
+    // NOTE: 설정 화면
     GoRoute(
       path: AppScreen.setting.toPath,
       name: AppScreen.setting.name,
-      builder: (context, state) => const SettingScreen(),
-    )
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: SettingScreen(),
+      ),
+    ),
   ],
 );
