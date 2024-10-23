@@ -13,6 +13,11 @@ import 'package:easy_extension/easy_extension.dart';
 class SettingScreen extends StatelessWidget {
   const SettingScreen({super.key});
 
+  class _SettingScreen extends State<SettingScreen>{
+    super.initState();
+    _fetchUserData();
+  }
+
   // NOTE: 유저 정보 가져오기
   Future<Map<String, dynamic>> fetchUserData() async {
     final tokenType = StorageHelper.authData!.tokenType.firstUpperCase;
@@ -30,7 +35,7 @@ class SettingScreen extends StatelessWidget {
 
     if (statusCode != 200) throw Exception(body);
 
-    return jsonDecode(body);
+    final userData = jsonDecode(body);
   }
 
   @override
@@ -67,10 +72,17 @@ class SettingScreen extends StatelessWidget {
 
                 return ListTile(
                   leading: CircleAvatar(
-                    backgroundImage: NetworkImage(profileImage),
+                    backgroundImage: _profileImageUrl != null //
+                    ? NetworkImage(_profileImageUrl)
+                    : null,
+                    child: _profileUrl != null //
+                    ? _profileImageUrl!.isEmpty
+                      ?const Icon(Icons.cancle)
+                      :null
+                    : const CircularProgressIndicator(),
                   ),
-                  title: Text(name),
-                  subtitle: Text(studentNumber),
+                  title: Text(_name ?? '데이터 로딩 중..'),
+                  subtitle: Text(_studentNumber ?? ''),
                 );
               }),
         ],
