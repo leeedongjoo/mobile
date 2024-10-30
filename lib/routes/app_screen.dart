@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app/routes/app_screen.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-enum AppScreen { login, main, setting }
+enum AppScreen { login, main, setting, users }
 
 extension AppScreenExtension on AppScreen {
   String get toPath {

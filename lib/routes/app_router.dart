@@ -3,6 +3,7 @@ import 'package:app/routes/app_screen.dart';
 import 'package:app/screens/login/login_screen.dart';
 import 'package:app/screens/main/main_screen.dart';
 import 'package:app/screens/setting/setting_screen.dart';
+import 'package:app/screens/users/users_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:go_router/go_router.dart';
 
@@ -42,6 +43,13 @@ final appRouter = GoRouter(
       name: AppScreen.setting.name,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: SettingScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppScreen.users.toPath,
+      name: AppScreen.users.name,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: UsersScreen(),
       ),
     ),
   ],
