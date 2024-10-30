@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app/routes/app_screen.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 
 enum AppScreen { login, main, setting }
 
@@ -20,9 +21,9 @@ extension AppScreenExtension on AppScreen {
       case AppScreen.main:
         return Icons.home;
       case AppScreen.setting:
-        return Icons.settings;
+        return LucideIcons.settings2;
       default:
-        return Icons.face;
+        return LucideIcons.dot;
     }
   }
 }
