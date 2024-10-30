@@ -10,6 +10,24 @@ class UsersScreen extends StatefulWidget {
   
   class _UsersScreenState extends State<UsersScreen>{
     final List<UserData> _dummyDataList = List.generate(20, (i) {
+        List<UserData> _searchedDataList=[];
+
+        @override
+        void initState(){
+          super.initState();
+          _searchedDataList = _dummyDataList;
+        }
+
+        void _onSearch(String value) {
+           final cachedDataList = List.from(_dummyDataList);
+           setState((){
+            _searchedDataList = _dummyDataList
+              .where(
+                
+              );
+           });
+
+  }
 
     });
   }
@@ -26,8 +44,7 @@ class UsersScreen extends StatefulWidget {
               
             );
 
-  void _onSearch(String value) {}
-
+ 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
