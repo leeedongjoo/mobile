@@ -7,9 +7,12 @@ import 'package:app/helpers/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
 import '../../routes/app_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:file_picker/file_picker.dart';
+// ignore: unused_import
+import 'package:http_parser/http_parser.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -75,11 +78,17 @@ class _SettingScreenState extends State<SettingScreen> {
 
     if (result == null) return;
 
+    //final imageBytes =imageFile.bytes;
     final imageFile = result.files.single;
-    final imageBytes = imageFile.bytes;
+    final imageName = imageFile.name;
     final imagePath = imageFile.path;
+    final imageMime = lookupMimeType(imageName);
+    // NOTE : Mime 타입 자르기
+    final mimeSplit = imageMime?.split('/');
+    final mimeType = mimeSplit.first;
+    final mimeSubType = mimeSplit.last;
 
-    Log.green('이미지 경로: $imagePath / 이미지 바이트: ${imageBytes?.length}');
+    Log.green('프로필 이미지 업로드: $imageName, $imageMime ($mimeType, $mimeSubType)');
 
     if (imagePath == null) return;
 
