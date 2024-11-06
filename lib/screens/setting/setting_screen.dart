@@ -67,6 +67,11 @@ class _SettingScreenState extends State<SettingScreen> {
       _profileImageUrl = userData['profile_image'];
     });
   }
+  Future<void> _changePasswordDialog() aync{
+    showDialog(context: context, builder: (context) {
+      
+    },);
+  }
 
   /// NOTE: 프로필 이미지 업로드
   Future<void> _uploadProfileImage() async {
