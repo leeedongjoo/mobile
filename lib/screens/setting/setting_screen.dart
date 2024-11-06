@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:app/common/scaffold/app_scaffold.dart';
 import 'package:app/config.dart';
 import 'package:app/helpers/storage_helper.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -78,19 +80,21 @@ class _SettingScreenState extends State<SettingScreen> {
 
     if (result == null) return;
 
-    //final imageBytes =imageFile.bytes;
     final imageFile = result.files.single;
     final imageName = imageFile.name;
-    final imagePath = imageFile.path;
-    final imageMime = lookupMimeType(imageName);
-    // NOTE : Mime 타입 자르기
-    final mimeSplit = imageMime?.split('/');
-    final mimeType = mimeSplit.first;
-    final mimeSubType = mimeSplit.last;
+    final imageMime = lookupMimeType(imageName) ?? 'image/jpeg';
+    Uint8List? imageBytes;
 
-    Log.green('프로필 이미지 업로드: $imageName, $imageMime ($mimeType, $mimeSubType)');
+    String? imagePath;
 
-    if (imagePath == null) return;
+    if (kIsWeb) {
+      imageBytes = imageFile.bytes;
+    } else {
+      imagePath = imageFile.path!;
+    }
+
+    Log.green(
+        '이미지 업로드: $imageName / Bytes: ${imageBytes?.length} / Path: $imagePath');
 
     final tokenType = StorageHelper.authData!.tokenType.firstUpperCase;
     final token = StorageHelper.authData!.token;
@@ -105,36 +109,37 @@ class _SettingScreenState extends State<SettingScreen> {
         },
       )
       ..files.add(
-        await http.MultipartFile.fromPath(
-          'image',
-          imagePath,
-          // contentType: http.MediaType(),
-        ),
+        imageBytes != null
+            ? http.MultipartFile.fromBytes(
+                'image',
+                imageBytes,
+                filename: imageName,
+                contentType: MediaType.parse(imageMime),
+              )
+            : await http.MultipartFile.fromPath(
+                'image',
+                imagePath!,
+                contentType: MediaType.parse(imageMime),
+              ),
       );
 
-    Log.green('이미지 업로드');
-
     final response = await uploadRequest.send();
+    final uploadResult = await http.Response.fromStream(response);
 
-    Log.green('이미지 업로드 결과: ${response.statusCode}');
+    Log.green(
+      '이미지 업로드 결과: ${uploadResult.statusCode}, ${uploadResult.body}',
+    );
 
-    if (response.statusCode != 200) return;
+    if (uploadResult.statusCode != 200) return;
 
     _fetchUserData();
-
-    // var uri = Uri.https('example.com', 'create');
-    // var request = http.MultipartRequest('POST', uri)
-    //   ..fields['user'] = 'nweiz@google.com'
-    //   ..files.add(await http.MultipartFile.fromPath('package', 'build/package.tar.gz',
-    //       contentType: MediaType('application', 'x-tar')));
-    // var response = await request.send();
-    // if (response.statusCode == 200) print('Uploaded!');
   }
 
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       appScreen: AppScreen.setting,
+      child: Padding(padding: padding: ,),
       child: Column(
         children: [
           ListTile(
@@ -162,6 +167,14 @@ class _SettingScreenState extends State<SettingScreen> {
                   )
                 : null,
           ),
+          Row(children: [
+            const Text('비밀번호 변경'),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text('변경하기'),
+            )
+          ])
         ],
       ),
     );
