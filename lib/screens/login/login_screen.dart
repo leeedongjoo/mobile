@@ -258,15 +258,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         _buildSsoButton(
                           onTap: () => _onSsoSignIn(SsoEnum.google),
-                          iconUrl: icGoogle,
+                          iconUrl: Config.icon.Google,
                         ),
                         _buildSsoButton(
                           onTap: () => _onSsoSignIn(SsoEnum.apple),
-                          iconUrl: icApple,
+                          iconUrl: Config.icon.Apple,
                         ),
                         _buildSsoButton(
                           onTap: () => _onSsoSignIn(SsoEnum.github),
-                          iconUrl: icGithub,
+                          iconUrl: Config.icon.Github,
                         ),
                       ],
                     ),

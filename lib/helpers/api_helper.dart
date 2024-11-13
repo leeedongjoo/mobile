@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:app/config.dart';
+import 'package:app/helpers/storage_helper.dart';
 import 'package:app/models/auth_data.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:http/http.dart' as http;
@@ -35,6 +37,16 @@ class ApiHelper {
       return null;
     }
   }
-  static Future<(bool sucess,)>
 
+  static Future<(bool sucess, String error)> changePassword(
+    String newPassword,
+  ) async {
+    final authData = StorageHelper.authData;
+    final respose = http.post(
+      Uri.parse(Config.api.changePassword),
+      headers: {
+        HttpHeaders.authorizationHeader:'',
+      }
+    )
+  }
 }

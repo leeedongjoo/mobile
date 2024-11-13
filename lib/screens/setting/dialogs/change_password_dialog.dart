@@ -77,9 +77,12 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       });
     }
 
-    // TODO: 새로운 비밀번호로 변경 -> 성공 후 로그아웃 및 로그인 화면으로 이동
+    final (sucess, error) = await ApiHelper.changePassword(newPassword);
+    final sucess =
 
-    Log.green('비밀번호 변경 시작');
+        // TODO: 새로운 비밀번호로 변경 -> 성공 후 로그아웃 및 로그인 화면으로 이동
+
+        Log.green('비밀번호 변경 시작');
   }
 
   // NOTE: 비밀번호 입력 위젯
