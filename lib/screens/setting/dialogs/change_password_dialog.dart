@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:app/extensions/context_extension.dart';
 import 'package:app/helpers/api_helper.dart';
 import 'package:app/helpers/storage_helper.dart';
+import 'package:app/routes/app_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -77,12 +79,26 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       });
     }
 
+    // TODO: 새로운 비밀번호로 변경 -> 성공 후 로그아웃 및 로그인 화면으로 이동
     final (sucess, error) = await ApiHelper.changePassword(newPassword);
-    final sucess =
 
-        // TODO: 새로운 비밀번호로 변경 -> 성공 후 로그아웃 및 로그인 화면으로 이동
+    if (!sucess) {
+      Log.red('비밀번호 변경 시작');
 
-        Log.green('비밀번호 변경 시작');
+      if (mounted) {
+        context.showSnackBarText('비밀번호를 변경할 수 없습니다.');
+      }
+      return;
+    }
+
+    // NOTE: 비밀번호 변경 성공
+    StorageHelper.removeAuthData();
+
+    if (mounted) {
+      context.pushReplacementNamed(
+        AppScreen.login.name,
+      );
+    }
   }
 
   // NOTE: 비밀번호 입력 위젯

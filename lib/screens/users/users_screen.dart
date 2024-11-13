@@ -39,7 +39,14 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   void initState() {
     super.initState();
-    _searchedDataList = _dummyDataList;
+    // _searchedDataList = _dummyDataList;
+    _fetchUserList();
+  }
+
+  //Note:유저목록가져오기
+  Future<void> _fetchUserList() async {
+    final users
+
   }
 
   // NOTE: 유저 검색
