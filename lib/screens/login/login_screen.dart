@@ -4,6 +4,7 @@ import 'package:app/enums/sso_enum.dart';
 import 'package:app/extensions/context_extension.dart';
 import 'package:app/common/widgets/gradient_divider.dart';
 import 'package:app/config.dart';
+import 'package:app/helpers/api_helper.dart';
 import 'package:app/helpers/storage_helper.dart';
 import 'package:app/models/auth_data.dart';
 import 'package:app/routes/app_screen.dart';
@@ -41,36 +42,24 @@ class _LoginScreenState extends State<LoginScreen> {
     final email = _emailController.text;
     final password = _pwController.text;
 
-    final loginData = {
-      'email': email,
-      'password': password,
-    };
-
-    final response = await http.post(
-      Uri.parse(getTokenUrl),
-      body: jsonEncode(loginData),
+    // NOTE: AuthData 로 변환
+    final authData = await ApiHelper.signIn(
+      email: email,
+      password: password,
     );
 
-    final statusCode = response.statusCode;
-    final body = utf8.decode(response.bodyBytes);
-
-    if (statusCode != 200) {
+    if (authData == null) {
       if (mounted) {
         context.showSnackBar(
-          content: Text(body),
+          content: const Text('로그인을 실패했습니다.'),
         );
       }
       return;
     }
 
-    // NOTE: AuthData 로 변환
-    final authData = AuthData.fromMap(jsonDecode(body));
     await StorageHelper.setAuthData(authData);
-    final savedAuthData = StorageHelper.authData;
 
     // TODO: 화면 이동
-    Log.green(savedAuthData);
-
     if (mounted) context.goNamed(AppScreen.users.name);
   }
 

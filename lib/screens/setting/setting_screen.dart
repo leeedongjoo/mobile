@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:app/common/scaffold/app_scaffold.dart';
 import 'package:app/config.dart';
 import 'package:app/helpers/storage_helper.dart';
+import 'package:app/screens/setting/dialogs/change_password_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -67,11 +68,6 @@ class _SettingScreenState extends State<SettingScreen> {
       _profileImageUrl = userData['profile_image'];
     });
   }
-  Future<void> _changePasswordDialog() aync{
-    showDialog(context: context, builder: (context) {
-      
-    },);
-  }
 
   /// NOTE: 프로필 이미지 업로드
   Future<void> _uploadProfileImage() async {
@@ -89,8 +85,10 @@ class _SettingScreenState extends State<SettingScreen> {
     final imageName = imageFile.name;
     final imageMime = lookupMimeType(imageName) ?? 'image/jpeg';
     Uint8List? imageBytes;
-
     String? imagePath;
+
+    // kDebugMode
+    // kReleaseMode
 
     if (kIsWeb) {
       imageBytes = imageFile.bytes;
@@ -140,47 +138,67 @@ class _SettingScreenState extends State<SettingScreen> {
     _fetchUserData();
   }
 
+  /// NOTE: 비밀번호 변경 다이얼로그
+  Future<void> _changePasswordDialog() async {
+    showDialog(
+      context: context,
+      builder: (context) => const ChangePasswordDialog(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
       appScreen: AppScreen.setting,
-      child: Padding(padding: padding: ,),
-      child: Column(
-        children: [
-          ListTile(
-            leading: InkWell(
-              onTap: _uploadProfileImage,
-              child: CircleAvatar(
-                backgroundImage: _profileImageUrl != null //
-                    ? _profileImageUrl!.isNotEmpty
-                        ? NetworkImage(_profileImageUrl!)
-                        : null
-                    : null,
-                child: _profileImageUrl != null //
-                    ? _profileImageUrl!.isEmpty
-                        ? const Icon(Icons.cancel)
-                        : null
-                    : const CircularProgressIndicator(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 14,
+        ),
+        child: Column(
+          children: [
+            // NOTE: 유저 정보 표시 (프로필 사진, 이름, 학번)
+            //#region
+            ListTile(
+              leading: InkWell(
+                onTap: _uploadProfileImage,
+                child: CircleAvatar(
+                  backgroundImage: _profileImageUrl != null //
+                      ? _profileImageUrl!.isNotEmpty
+                          ? NetworkImage(_profileImageUrl!)
+                          : null
+                      : null,
+                  child: _profileImageUrl != null //
+                      ? _profileImageUrl!.isEmpty
+                          ? const Icon(Icons.cancel)
+                          : null
+                      : const CircularProgressIndicator(),
+                ),
               ),
+              title: Text(_name ?? '데이터 로딩 중..'),
+              subtitle: _studentNumber != null //
+                  ? Text(
+                      _studentNumber!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  : null,
             ),
-            title: Text(_name ?? '데이터 로딩 중..'),
-            subtitle: _studentNumber != null //
-                ? Text(
-                    _studentNumber!,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : null,
-          ),
-          Row(children: [
-            const Text('비밀번호 변경'),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('변경하기'),
-            )
-          ])
-        ],
+            //#endregion
+
+            // NOTE: 비밀번호 변경 버튼
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('비밀번호 변경'),
+                ElevatedButton(
+                  onPressed: _changePasswordDialog,
+                  child: const Text('변경하기'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
