@@ -113,12 +113,17 @@ class ApiHelper {
   }
 
   static Future createChatRoom(String userId) async {
-    final result = http.post(Uri.parse(Config.api.createRoom),
-        headers: {
-          HttpHeaders.authorizationHeader: '',
-        },
-        body: jsonEncode({
-          'user_id': userId,
-        }));
+    final response = await post(
+      Config.api.createRoom,
+      body: {'user_id': userId},
+    );
+
+    final statusCode = response.statusCode;
+    final body = utf8.decode(response.bodyBytes);
+
+    if (statusCode != 200) {
+      return (false, body);
+    }
+    return (true, '');
   }
 }
