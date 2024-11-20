@@ -8,6 +8,21 @@ import 'package:easy_extension/easy_extension.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHelper {
+  static Future<http.Response> get(String url) {
+    final authData = StorageHelper.authData!;
+    http.get(Uri.parse(url), headers: {
+      HttpHeaders.authorizationHeader:
+          '${authData.tokenType} ${authData.token}',
+    });
+  }
+
+  static Future<http.Response> post(
+    String url, {
+    Map<String, dynamic>? body,
+  }) {
+    final authData = StorageHelper.authData!;
+  }
+
   /// NOTE: 로그인 API
   /// - [email] 이메일
   /// - [password] 비밀번호
@@ -73,13 +88,7 @@ class ApiHelper {
   static Future<List<UserData>> fetchUserList() async {
     final authData = StorageHelper.authData!;
 
-    final response = await http.get(
-      Uri.parse(Config.api.getUserList),
-      headers: {
-        HttpHeaders.authorizationHeader:
-            '${authData.tokenType} ${authData.token}',
-      },
-    );
+    final response = await http.get(Config.api.getUserList);
 
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
@@ -90,5 +99,15 @@ class ApiHelper {
     final List<dynamic> data = bodyJson['data'] ?? [];
 
     return data.map((e) => UserData.fromMap(e)).toList();
+  }
+
+  static Future createChatRoom(String userId) async {
+    final result = http.post(Uri.parse(Config.api.createRoom),
+        headers: {
+          HttpHeaders.authorizationHeader: '',
+        },
+        body: jsonEncode({
+          'user_id': userId,
+        }));
   }
 }

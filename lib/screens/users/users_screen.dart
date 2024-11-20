@@ -5,7 +5,7 @@ import 'package:app/models/user_data.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:app/routes/app_screen.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
