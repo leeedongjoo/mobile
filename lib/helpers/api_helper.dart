@@ -4,7 +4,10 @@ import 'package:app/config.dart';
 import 'package:app/helpers/storage_helper.dart';
 import 'package:app/models/auth_data.dart';
 import 'package:app/models/user_data.dart';
+import 'package:app/routes/app_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHelper {
@@ -57,6 +60,14 @@ class ApiHelper {
       Log.red('유저 정보 파싱 에러: $e\n$stack');
       return null;
     }
+  }
+
+  static Future<void> signOut(BuildContext context) async {
+    await StorageHelper.removeAuthData();
+
+    if (!context.mounted) return;
+
+    context.goNamed(AppScreen.login.name);
   }
 
   /// NOTE: 비밀번호 변경 API
