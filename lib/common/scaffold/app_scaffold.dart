@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 
 class AppScaffold extends StatelessWidget {
   final AppScreen appScreen;
+  final PreferredSizeWidget? appBar;
   final Widget child;
 
   const AppScaffold({
     super.key,
     required this.appScreen,
+    this.appBar,
     required this.child,
   });
 
@@ -19,7 +21,14 @@ class AppScaffold extends StatelessWidget {
         child: Row(
           children: [
             AppNavigationRail(appScreen: appScreen),
-            Expanded(child: child),
+            Expanded(
+              child: Column(
+                children: [
+                  if (appBar != null) appBar!,
+                  Expanded(child: child),
+                ],
+              ),
+            ),
           ],
         ),
       ),

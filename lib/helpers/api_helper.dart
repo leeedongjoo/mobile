@@ -8,9 +8,11 @@ import 'package:easy_extension/easy_extension.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHelper {
-  // - {email}이메일
-  // - {password} 비밀번호
-  //// - {return}
+  /// NOTE: 로그인 API
+  /// - [email] 이메일
+  /// - [password] 비밀번호
+  /// - [return]
+  ///   - AuthData
   static Future<AuthData?> signIn({
     required String email,
     required String password,
@@ -21,7 +23,7 @@ class ApiHelper {
     };
 
     final response = await http.post(
-      Uri.parse(getTokenUrl),
+      Uri.parse(Config.api.getToken),
       body: jsonEncode(loginData),
     );
 
@@ -42,20 +44,34 @@ class ApiHelper {
     }
   }
 
-  static Future<(bool sucess, String error)> changePassword(
-    String newPassword,
-  ) async {
-    final authData = StorageHelper.authData;
-    final response = http.post(
+  /// NOTE: 비밀번호 변경 API
+  /// - [newPassword]: 새로운 비밀번호
+  static Future<(bool success, String error)> changePassword(
+      String newPassword) async {
+    final authData = StorageHelper.authData!;
+
+    final response = await http.post(
       Uri.parse(Config.api.changePassword),
       headers: {
-        HttpHeaders.authorizationHeader: '',
+        HttpHeaders.authorizationHeader:
+            '${authData.tokenType} ${authData.token}',
       },
+      body: jsonEncode({
+        'password': newPassword,
+      }),
     );
+
+    final statusCode = response.statusCode;
+    final body = utf8.decode(response.bodyBytes);
+
+    if (statusCode != 200) return (false, body);
+
+    return (true, '');
   }
 
-  static Future fetchUserList() async {
-    final AuthData = StorageHelper.authData!;
+  /// NOTE: 유저 목록 가져오는 API
+  static Future<List<UserData>> fetchUserList() async {
+    final authData = StorageHelper.authData!;
 
     final response = await http.get(
       Uri.parse(Config.api.getUserList),
@@ -64,8 +80,10 @@ class ApiHelper {
             '${authData.tokenType} ${authData.token}',
       },
     );
+
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
+
     if (statusCode != 200) return [];
 
     final bodyJson = jsonDecode(body);

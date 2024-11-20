@@ -45,7 +45,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   /// NOTE: 입력란 검증
   /// - Empty Value 체크
   String? _validator(String? value) {
-    if (value == null || value.isEmpty) {
+    if (value == null || value.isEmpty || value.trim().isEmpty) {
       return '이 입력란을 작성하세요.';
     }
     return null;
@@ -79,12 +79,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
       });
     }
 
-    // TODO: 새로운 비밀번호로 변경 -> 성공 후 로그아웃 및 로그인 화면으로 이동
-    final (sucess, error) = await ApiHelper.changePassword(newPassword);
+    final (success, error) = await ApiHelper.changePassword(newPassword);
 
-    if (!sucess) {
-      Log.red('비밀번호 변경 시작');
-
+    // NOTE: 비밀번호 변경 에러
+    if (!success) {
+      Log.red('비밀번호 변경 에러: $error');
       if (mounted) {
         context.showSnackBarText('비밀번호를 변경할 수 없습니다.');
       }
@@ -92,12 +91,13 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
     }
 
     // NOTE: 비밀번호 변경 성공
-    StorageHelper.removeAuthData();
+    await StorageHelper.removeAuthData();
 
     if (mounted) {
-      context.pushReplacementNamed(
-        AppScreen.login.name,
+      context.showSnackBarText(
+        '비밀번호를 변경했습니다. 다시 로그인해주세요.',
       );
+      context.goNamed(AppScreen.login.name);
     }
   }
 
@@ -173,6 +173,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                 children: ListTile.divideTiles(
                   context: context,
                   tiles: [
+                    // NOTE: 현재 비밀번호 입력란
                     _buildTextField(
                       formKey: _currentPwFormKey,
                       textController: _currentPwController,
@@ -187,6 +188,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         });
                       },
                     ),
+
                     Container(
                       height: 20,
                       color: _bgColor,
@@ -198,6 +200,8 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         ),
                       ),
                     ),
+
+                    // NOTE: 새 비밀번호 입력란
                     _buildTextField(
                       formKey: _newPwFormKey,
                       textController: _newPwController,
@@ -209,6 +213,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         if (isEmptyValidate != null) {
                           return isEmptyValidate;
                         }
+
                         if (value!.length < 6) {
                           return '6글자 이상 설정해야합니다.';
                         }
@@ -221,6 +226,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
                         });
                       },
                     ),
+                    // NOTE: 새 비밀번호 확인 입력란
                     _buildTextField(
                       formKey: _newConfirmPwFormKey,
                       textController: _newConfirmPwController,

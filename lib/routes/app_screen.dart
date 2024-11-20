@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:app/routes/app_screen.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
-enum AppScreen { login, users, setting }
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+enum AppScreen { login, users, chattingRooms, setting }
 
 extension AppScreenExtension on AppScreen {
   String get toPath {
@@ -11,6 +11,8 @@ extension AppScreenExtension on AppScreen {
         return '/login';
       case AppScreen.users:
         return '/users';
+      case AppScreen.chattingRooms:
+        return '/chatting-rooms';
       case AppScreen.setting:
         return '/setting';
     }
@@ -20,6 +22,8 @@ extension AppScreenExtension on AppScreen {
     switch (this) {
       case AppScreen.users:
         return LucideIcons.users;
+      case AppScreen.chattingRooms:
+        return LucideIcons.messageCircleMore;
       case AppScreen.setting:
         return LucideIcons.settings2;
       default:

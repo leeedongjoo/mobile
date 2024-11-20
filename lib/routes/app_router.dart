@@ -1,6 +1,7 @@
 import 'package:app/helpers/storage_helper.dart';
 import 'package:app/routes/app_screen.dart';
 import 'package:app/screens/login/login_screen.dart';
+import 'package:app/screens/rooms/rooms_screen.dart';
 import 'package:app/screens/setting/setting_screen.dart';
 import 'package:app/screens/users/users_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
@@ -34,6 +35,14 @@ final appRouter = GoRouter(
       name: AppScreen.users.name,
       pageBuilder: (context, state) => const NoTransitionPage(
         child: UsersScreen(),
+      ),
+    ),
+    // NOTE: 채팅 목록 화면
+    GoRoute(
+      path: AppScreen.chattingRooms.toPath,
+      name: AppScreen.chattingRooms.name,
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: RoomsScreen(),
       ),
     ),
     // NOTE: 설정 화면
