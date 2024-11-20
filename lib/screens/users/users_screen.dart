@@ -1,5 +1,6 @@
 import 'package:app/common/scaffold/app_scaffold.dart';
 import 'package:app/config.dart';
+import 'package:app/extensions/context_extension.dart';
 import 'package:app/helpers/api_helper.dart';
 import 'package:app/models/user_data.dart';
 import 'package:easy_extension/easy_extension.dart';
@@ -64,6 +65,17 @@ class _UsersScreenState extends State<UsersScreen> {
           )
           .toList();
     });
+  }
+
+  Future<void> _onCreateRoom(UserData user) async {
+    Log.green('채팅방 개설: ${user.name}');
+
+    final result = await ApiHelper.createChatRoom(user.id);
+
+    if (!success) {
+      return context.showSnackBarText(error);
+    }
+    return context.showSnackBarText('채팅방 개설 성공');
   }
 
   @override

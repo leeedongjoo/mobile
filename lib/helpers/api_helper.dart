@@ -99,7 +99,7 @@ class ApiHelper {
   static Future<List<UserData>> fetchUserList() async {
     final authData = StorageHelper.authData!;
 
-    final response = await http.get(Config.api.getUserList);
+    final response = await http.get(Config.api.getUserList as Uri);
 
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
@@ -121,9 +121,6 @@ class ApiHelper {
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
 
-    if (statusCode != 200) {
-      return (false, body);
-    }
-    return (true, '');
+    return (statusCode, body);
   }
 }
