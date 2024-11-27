@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app/common/typedef/app_typedef.dart';
 import 'package:app/config.dart';
 import 'package:app/helpers/storage_helper.dart';
 import 'package:app/models/auth_data.dart';
@@ -11,19 +12,38 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 class ApiHelper {
+  /// GET
   static Future<http.Response> get(String url) {
     final authData = StorageHelper.authData!;
-    http.get(Uri.parse(url), headers: {
-      HttpHeaders.authorizationHeader:
-          '${authData.tokenType} ${authData.token}',
-    });
+
+    return http.get(
+      Uri.parse(url),
+      headers: {
+        HttpHeaders.authorizationHeader:
+            '${authData.tokenType} ${authData.token}',
+      },
+    );
   }
 
+  /// POST
   static Future<http.Response> post(
     String url, {
     Map<String, dynamic>? body,
   }) {
-    final authData = StorageHelper.authData!;
+    final authData = StorageHelper.authData;
+
+    return http.post(
+      Uri.parse(url),
+      headers: authData != null
+          ? {
+              HttpHeaders.authorizationHeader:
+                  '${authData.tokenType} ${authData.token}',
+            }
+          : null,
+      body: body != null //
+          ? jsonEncode(body)
+          : null,
+    );
   }
 
   /// NOTE: 로그인 API
@@ -40,9 +60,9 @@ class ApiHelper {
       'password': password,
     };
 
-    final response = await http.post(
-      Uri.parse(Config.api.getToken),
-      body: jsonEncode(loginData),
+    final response = await post(
+      Config.api.getToken,
+      body: loginData,
     );
 
     final statusCode = response.statusCode;
@@ -62,6 +82,7 @@ class ApiHelper {
     }
   }
 
+  /// NOTE: 로그아웃 API
   static Future<void> signOut(BuildContext context) async {
     await StorageHelper.removeAuthData();
 
@@ -72,19 +93,12 @@ class ApiHelper {
 
   /// NOTE: 비밀번호 변경 API
   /// - [newPassword]: 새로운 비밀번호
-  static Future<(bool success, String error)> changePassword(
-      String newPassword) async {
-    final authData = StorageHelper.authData!;
-
-    final response = await http.post(
-      Uri.parse(Config.api.changePassword),
-      headers: {
-        HttpHeaders.authorizationHeader:
-            '${authData.tokenType} ${authData.token}',
-      },
-      body: jsonEncode({
+  static Future<Result> changePassword(String newPassword) async {
+    final response = await post(
+      Config.api.changePassword,
+      body: {
         'password': newPassword,
-      }),
+      },
     );
 
     final statusCode = response.statusCode;
@@ -97,9 +111,7 @@ class ApiHelper {
 
   /// NOTE: 유저 목록 가져오는 API
   static Future<List<UserData>> fetchUserList() async {
-    final authData = StorageHelper.authData!;
-
-    final response = await http.get(Config.api.getUserList as Uri);
+    final response = await get(Config.api.getUserList);
 
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
@@ -112,15 +124,28 @@ class ApiHelper {
     return data.map((e) => UserData.fromMap(e)).toList();
   }
 
-  static Future createChatRoom(String userId) async {
+  /// NOTE: 채팅방 생성 API
+  /// - [userId] 상대방 ID
+  static Future<ResultWithCode> createChatRoom(String userId) async {
     final response = await post(
       Config.api.createRoom,
-      body: {'user_id': userId},
+      body: {
+        'user_id': userId,
+      },
     );
 
     final statusCode = response.statusCode;
     final body = utf8.decode(response.bodyBytes);
 
-    return (statusCode, body);
+    if (statusCode != 200) {
+      return (statusCode, body);
+    }
+
+    final bodyJson = jsonDecode(body);
+
+    final int code = bodyJson['code'] ?? 404;
+    final String message = bodyJson['message'] ?? '';
+
+    return (code, message);
   }
 }

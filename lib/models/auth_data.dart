@@ -40,10 +40,12 @@ class AuthData {
   // NOTE: AuthData 로 매핑
   factory AuthData.fromMap(Map<String, dynamic> map) {
     return AuthData(
-      email: map['email'],
-      tokenType: map['token_type'],
-      token: map['access_token'],
-      expiresAt: DateTime.fromMillisecondsSinceEpoch(map['expires_at']),
+      email: map['email'] ?? '', // 기본값으로 빈 문자열 설정
+      tokenType: map['token_type'] ?? 'Bearer', // 기본값 설정
+      token: map['access_token'] ?? '', // 기본값 설정
+      expiresAt: map['expires_at'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(map['expires_at'])
+          : DateTime.now(), // 기본값으로 현재 시간을 설정
     );
   }
 

@@ -1,12 +1,13 @@
+import 'package:app/api_error.dart';
 import 'package:app/common/scaffold/app_scaffold.dart';
-import 'package:app/config.dart';
-import 'package:app/extensions/context_extension.dart';
+
 import 'package:app/helpers/api_helper.dart';
 import 'package:app/models/user_data.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:app/routes/app_screen.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:app/screens/users/widget/user_item.dart';
 
 class UsersScreen extends StatefulWidget {
   const UsersScreen({super.key});
@@ -16,17 +17,6 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  final List<UserData> _dummyDataList = List.generate(20, (i) {
-    final index = i + 1;
-
-    return UserData(
-      id: '$index',
-      name: '유저 $index',
-      email: '$index@daelim.ac.kr',
-      studentNumber: '$index',
-      profileImageUrl: Config.image.defaultProfile,
-    );
-  });
   List<UserData> _users = [];
   List<UserData> _searchedUsers = [];
 
@@ -42,8 +32,6 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   void initState() {
     super.initState();
-    // _searchedDataList = _dummyDataList;
-    // _searchedDataList = _fetchUserList();
     _fetchUserList();
   }
 
@@ -67,15 +55,27 @@ class _UsersScreenState extends State<UsersScreen> {
     });
   }
 
+  // NOTE: 채팅방 개설
   Future<void> _onCreateRoom(UserData user) async {
     Log.green('채팅방 개설: ${user.name}');
 
-    final result = await ApiHelper.createChatRoom(user.id);
+    final (code, error) = await ApiHelper.createChatRoom(user.id);
 
-    if (!success) {
-      return context.showSnackBarText(error);
+    Log.green({'Code': code, 'Error': error});
+
+    if (code == ApiError.createChatRoom.success) {
+      // TODO: 채팅방 개설 완료
+    } else if (code == ApiError.createChatRoom.requiredUserId) {
+      // TODO: 상대방 ID 필수
+    } else if (code == ApiError.createChatRoom.cannotMySelf) {
+      // TODO: 자기 자신
+    } else if (code == ApiError.createChatRoom.notFound) {
+      // TODO: 상대방 없음
+    } else if (code == ApiError.createChatRoom.onlyCanChatbot) {
+      // TODO: 오직 챗봇만
+    } else if (code == ApiError.createChatRoom.alreadyRoom) {
+      // TODO: 이미 생성됨
     }
-    return context.showSnackBarText('채팅방 개설 성공');
   }
 
   @override
@@ -139,22 +139,11 @@ class _UsersScreenState extends State<UsersScreen> {
                 itemCount: _searchedUsers.length,
                 separatorBuilder: (context, index) => const Divider(),
                 itemBuilder: (context, index) {
-                  final dummy = _searchedUsers[index];
+                  final user = _searchedUsers[index];
 
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: const Color(0xFFEAEAEA),
-                      foregroundImage: NetworkImage(
-                        dummy.profileImageUrl,
-                      ),
-                    ),
-                    title: Text(
-                      dummy.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    subtitle: Text(dummy.studentNumber),
+                  return UserItem(
+                    user: user,
+                    onTap: () => _onCreateRoom(user),
                   );
                 },
               ),

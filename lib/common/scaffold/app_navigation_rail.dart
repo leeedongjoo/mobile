@@ -1,10 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:app/routes/app_screen.dart';
-import 'package:app/routes/app_screen.dart';
+import 'package:app/extensions/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-
+import 'package:easy_extension/easy_extension.dart';
 import '../../routes/app_screen.dart';
+import 'package:app/helpers/api_helper.dart';
 
 class AppNavigationRail extends StatelessWidget {
   final AppScreen appScreen;
@@ -23,6 +25,7 @@ class AppNavigationRail extends StatelessWidget {
       children: [
         Expanded(
           child: NavigationRail(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             onDestinationSelected: (value) {
               final screen = screens[value];
               context.pushNamed(screen.name);
@@ -36,10 +39,12 @@ class AppNavigationRail extends StatelessWidget {
             }).toList(),
           ),
         ),
+        10.heightBox,
         IconButton(
-          onPressed: () {},
+          onPressed: () => ApiHelper.signOut(context),
           icon: const Icon(LucideIcons.logOut),
         ),
+        10.heightBox,
       ],
     );
   }
