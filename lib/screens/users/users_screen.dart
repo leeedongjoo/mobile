@@ -1,5 +1,6 @@
 import 'package:app/api_error.dart';
 import 'package:app/common/scaffold/app_scaffold.dart';
+import 'package:app/extensions/context_extension.dart';
 
 import 'package:app/helpers/api_helper.dart';
 import 'package:app/models/user_data.dart';
@@ -62,6 +63,24 @@ class _UsersScreenState extends State<UsersScreen> {
     final (code, error) = await ApiHelper.createChatRoom(user.id);
 
     Log.green({'Code': code, 'Error': error});
+    switch (code) {
+      case 200:
+        Log.green('채팅방 개설 완료: $roomId');
+        break;
+      case 1001:
+        return context.showSnackBarText('상대방 ID는 필수입니다.');
+      case 1002:
+        return context.showSnackBarText('자신과 대화할 수 없습니다.');
+
+      case 1003:
+        return context.showSnackBarText('상대방 검색에 실패했습니다.');
+
+      case 1004:
+        return context.showSnackBarText('챗봇만 대화가 가능합니다.');
+
+      case 1005:
+        Log.green('text');
+    }
 
     if (code == ApiError.createChatRoom.success) {
       // TODO: 채팅방 개설 완료
