@@ -19,13 +19,13 @@ class AppNavigationRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screens = List<AppScreen>.from(AppScreen.values);
-    screens.removeAt(0);
+    screens.removeRange(0, 2);
 
     return Column(
       children: [
         Expanded(
           child: NavigationRail(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            backgroundColor: context.theme.scaffoldBackgroundColor,
             onDestinationSelected: (value) {
               final screen = screens[value];
               context.pushNamed(screen.name);
