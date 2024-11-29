@@ -6,8 +6,10 @@ class AuthData {
   final String tokenType;
   final String token;
   final DateTime expiresAt;
+  final String userId;
 
   AuthData({
+    required this.userId,
     required this.email,
     required this.tokenType,
     required this.token,
@@ -19,12 +21,14 @@ class AuthData {
     String? tokenType,
     String? token,
     DateTime? expiresAt,
+    String? userId,
   }) {
     return AuthData(
       email: email ?? this.email,
       tokenType: tokenType ?? this.tokenType,
       token: token ?? this.token,
       expiresAt: expiresAt ?? this.expiresAt,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -40,6 +44,7 @@ class AuthData {
   // NOTE: AuthData 로 매핑
   factory AuthData.fromMap(Map<String, dynamic> map) {
     return AuthData(
+      userId: map['user_id'],
       email: map['email'] ?? '', // 기본값으로 빈 문자열 설정
       tokenType: map['token_type'] ?? 'Bearer', // 기본값 설정
       token: map['access_token'] ?? '', // 기본값 설정

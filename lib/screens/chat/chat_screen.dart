@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:app/common/scaffold/app_scaffold.dart';
 import 'package:app/routes/app_screen.dart';
 import 'package:easy_extension/easy_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChatScreen extends StatefulWidget {
   final String roomId;
@@ -16,6 +20,11 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final _client = Supabase.instance.client;
+
+  StreamSubscription<List<Map<String, dynamic>>>? _messageStream;
+  get roomId => widget.roomId;
+
   final _primaryColor = const Color(0xFF4E80EE);
   final _secondaryColor = Colors.white;
   final _backgroundColor = const Color(0xFFF3F4F6);
@@ -34,7 +43,45 @@ class _ChatScreenState extends State<ChatScreen> {
     _dummyChatList = _dummyChatList.sortedBy((e) => e['created_at']);
   }
 
-  void _onSendMessage() {}
+  @override
+  void dispose() {
+    _startMessageStream();
+    super.initState();
+    //
+  }
+
+  /// 메세지 스트림 시작
+  void _startMessageStream() {
+    final client = Supabase.instance.client;
+
+    client
+
+        ///
+        .from('chat_messages')
+        .stream(
+          primaryKey: ['id'],
+        )
+        .eq('room_id', widget.roomId)
+        .listen((data) {});
+  }
+
+  ///메세지 스트림 종료
+  void _stopMessageStream() {
+    _messageStream?.cancel();
+    _messageStream = null;
+  }
+
+  Future<void> _onSendMessage() async {
+    final message = _textController.text;
+
+    if (message.isEmpty || message.trim().isEmpty) return;
+
+    _client.from('chat_messages').insert({
+      'room_id': _roomId,
+      'sender_id': senderId,
+      'message': message,
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +98,11 @@ class _ChatScreenState extends State<ChatScreen> {
               separatorBuilder: (context, index) {
                 return 10.heightBox;
               },
+              padding: const EdgeInsets.only(
+                top: 16,
+                left: 10,
+                right: 16,
+              ),
               itemBuilder: (context, index) {
                 final dummy = _dummyChatList[index];
                 final String senderId = dummy['sender_id'];
@@ -69,11 +121,25 @@ class _ChatScreenState extends State<ChatScreen> {
                         maxWidth: 250,
                         minWidth: 50,
                       ),
-                      color: isMy //
-                          ? _primaryColor
-                          : _secondaryColor,
+                      decoration: BoxDecoration(
+                          color: isMy //
+                              ? _primaryColor
+                              : _secondaryColor,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(0, 1),
+                              blurRadius: 2,
+                              spreadRadius: 2,
+                            )
+                          ]),
                       child: ListTile(
-                        title: Text(message),
+                        title: Text(
+                          message,
+                          style: TextStyle(
+                            color: isMy ? Colors.white : Colors.black,
+                          ),
+                        ),
                         subtitle: Text(
                           createdAt.toFormat('HH:mm'),
                         ),
@@ -99,6 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: _textController,
                     decoration: InputDecoration(
                       filled: false,
                       hintText: '메시지를 입력하세요...',
