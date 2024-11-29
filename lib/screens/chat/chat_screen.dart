@@ -21,9 +21,9 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _client = Supabase.instance.client;
-
+  final _textController = TextEditingController();
   StreamSubscription<List<Map<String, dynamic>>>? _messageStream;
-  get roomId => widget.roomId;
+  get _roomId => widget.roomId;
 
   final _primaryColor = const Color(0xFF4E80EE);
   final _secondaryColor = Colors.white;
@@ -36,6 +36,8 @@ class _ChatScreenState extends State<ChatScreen> {
       'created_at': DateTime.now().add(-index.toMinute),
     };
   });
+
+  get senderId => null;
 
   @override
   void initState() {
@@ -52,17 +54,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   /// 메세지 스트림 시작
   void _startMessageStream() {
-    final client = Supabase.instance.client;
-
-    client
+    _client
 
         ///
         .from('chat_messages')
         .stream(
           primaryKey: ['id'],
         )
-        .eq('room_id', widget.roomId)
-        .listen((data) {});
+        .eq('room_id', _roomId)
+        .listen((data) {
+          Log.green('메세지 스트림: $data');
+        });
   }
 
   ///메세지 스트림 종료
@@ -76,11 +78,15 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if (message.isEmpty || message.trim().isEmpty) return;
 
-    _client.from('chat_messages').insert({
-      'room_id': _roomId,
-      'sender_id': senderId,
-      'message': message,
-    });
+    final (success, error) = await _client
+        .from('chat_messages')
+        .insert({
+          'room_id': _roomId,
+          'sender_id': senderId,
+          'message': message,
+        })
+        .then((value) => (true, ''))
+        .catchError((e, stack) => (false, e.toString()));
   }
 
   @override
@@ -93,63 +99,81 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.separated(
-              itemCount: _dummyChatList.length,
-              separatorBuilder: (context, index) {
-                return 10.heightBox;
-              },
-              padding: const EdgeInsets.only(
-                top: 16,
-                left: 10,
-                right: 16,
-              ),
-              itemBuilder: (context, index) {
-                final dummy = _dummyChatList[index];
-                final String senderId = dummy['sender_id'];
-                final String message = dummy['message'];
-                final DateTime createdAt = dummy['created_at'];
+              child: StreamBuilder(
+            stream: _client
+                .from('chat_messages')
+                .stream(primaryKey: ['id']).eq('room_id', _roomId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final data = snapshot.data ?? [];
 
-                final isMy = senderId == 'a';
+              if (data.isEmpty) {
+                return const Center(
+                  child: Text('메세지를 전송하세요.'),
+                );
+              }
+              return ListView.separated(
+                itemCount: _dummyChatList.length,
+                separatorBuilder: (context, index) {
+                  return 10.heightBox;
+                },
+                padding: const EdgeInsets.only(
+                  top: 16,
+                  left: 16,
+                  right: 16,
+                ),
+                itemBuilder: (context, index) {
+                  final dummy = _dummyChatList[index];
+                  final String senderId = dummy['sender_id'];
+                  final String message = dummy['message'];
+                  final DateTime createdAt = dummy['created_at'];
 
-                return Row(
-                  mainAxisAlignment: isMy //
-                      ? MainAxisAlignment.end
-                      : MainAxisAlignment.start,
-                  children: [
-                    Container(
-                      constraints: const BoxConstraints(
-                        maxWidth: 250,
-                        minWidth: 50,
-                      ),
-                      decoration: BoxDecoration(
-                          color: isMy //
-                              ? _primaryColor
-                              : _secondaryColor,
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.black12,
-                              offset: Offset(0, 1),
-                              blurRadius: 2,
-                              spreadRadius: 2,
-                            )
-                          ]),
-                      child: ListTile(
-                        title: Text(
-                          message,
-                          style: TextStyle(
-                            color: isMy ? Colors.white : Colors.black,
+                  final isMy = senderId == 'a';
+
+                  return Row(
+                    mainAxisAlignment: isMy //
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    children: [
+                      Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 250,
+                          minWidth: 50,
+                        ),
+                        decoration: BoxDecoration(
+                            color: isMy //
+                                ? _primaryColor
+                                : _secondaryColor,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(0, 1),
+                                blurRadius: 2,
+                                spreadRadius: 2,
+                              )
+                            ]),
+                        child: ListTile(
+                          title: Text(
+                            message,
+                            style: TextStyle(
+                              color: isMy ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            createdAt.toFormat('HH:mm'),
                           ),
                         ),
-                        subtitle: Text(
-                          createdAt.toFormat('HH:mm'),
-                        ),
                       ),
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
+                    ],
+                  );
+                },
+              );
+            },
+          )),
           // NOTE: 메시지 전송 영역
           Container(
             padding: const EdgeInsets.all(16),
